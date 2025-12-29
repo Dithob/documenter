@@ -1,2 +1,4 @@
 docling~=2.66.0
 requests~=2.32.5
+hf_xet
+pandas~=2.3.3
