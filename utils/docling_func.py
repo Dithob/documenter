@@ -8,11 +8,13 @@ from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import (
     EasyOcrOptions,
     PdfPipelineOptions,
-    TesseractOcrOptions
+    TesseractOcrOptions,
+    AcceleratorDevice,
+    AcceleratorOptions,
 )
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.transforms.chunker import HierarchicalChunker
-from win32verstamp import file_type
+
 
 # ---------------- 日志配置 ----------------
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -20,10 +22,6 @@ logger = logging.getLogger("docling_processor_final")
 
 
 # ----------------- 独立的类型获取函数 -----------------
-
-
-
-
 def _strip_mime(ct: Optional[str]) -> Optional[str]:
     if not ct:
         return None
@@ -129,11 +127,15 @@ def process_document(
             ocr_options = EasyOcrOptions()
 
     # ——— PDF Pipeline Options ———
-    pipeline_options = PdfPipelineOptions(
-        artifacts_path=artifacts_path,
-        do_ocr=do_ocr,
-        ocr_options=ocr_options
-    )
+    pipeline_options = PdfPipelineOptions()
+    pipeline_options.artifacts_path = artifacts_path
+    pipeline_options.do_ocr = do_ocr
+    pipeline_options.ocr_options = ocr_options
+    # pipeline_options.do_table_structure = True
+    # pipeline_options.table_structure_options.do_cell_matching = True
+    # pipeline_options.accelerator_options = AcceleratorOptions(
+    #     num_threads=4, device=AcceleratorDevice.AUTO
+    # )
 
     # ——— DocumentConverter ———
     converter = DocumentConverter(
@@ -163,12 +165,13 @@ if __name__ == "__main__":
     res = process_document(
         source=source_url,
         artifacts_path=artifacts,
-        do_ocr=True,
+        do_ocr=False,
         ocr_engine="easyocr"
     )
 
     # —— 根据文件类型选择导出 —— #
 
+    file_type = 2
     # 1️⃣ Excel
     # if file_type in [".xls", ".xlsx", ".xlsm", ".xlsb"]:
     if file_type == 2:
