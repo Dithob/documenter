@@ -2,3 +2,5 @@ docling~=2.66.0
 requests~=2.32.5
 hf_xet
 pandas~=2.3.3
+transformers~=4.57.3
+ipython~=8.37.0
